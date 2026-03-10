@@ -116,6 +116,10 @@ graph TB
 
 ## Vision IA — 3 niveaux · Fil rouge transversal
 
+L'IA ne rend pas obsolètes les procédures, la LACI ou PlaSta. Elle les réoriente : on ne les enseigne plus pour que le CP les mémorise, mais pour qu'il en comprenne la logique et les limites — de sorte qu'il puisse exercer son jugement quand la situation s'écarte de la norme, quand l'outil se trompe, quand la règle rencontre le cas particulier.
+
+C'est cette différence — entre appliquer une procédure et comprendre pourquoi elle existe — qui distingue un technicien de procédure d'un professionnel du placement. L'IA ne comble pas cet écart. Elle le creuse, en prenant en charge la partie mécanique du travail et en laissant au CP exactement ce que la machine ne peut pas faire : décider en situation, avec du discernement.
+
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │  Niveau 1 — UTILISER          Horizon : maintenant          │
