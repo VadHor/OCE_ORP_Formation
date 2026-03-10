@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>M2 — Assurance-chômage LACI</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,300&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+:root{--red:#C1001F;--navy:#0A1628;--cream:#F8F6F1;--warm-grey:#E8E4DC;--mid-grey:#9A9590;--text:#2A2520;--plenum:#1A4A8A;--groupe:#2A7A4A;--individuel:#7A3A1A}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Source Serif 4',Georgia,serif;background:var(--cream);color:var(--text);line-height:1.65}
+.topbar{background:var(--navy);padding:10px 40px;display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid var(--red);position:sticky;top:0;z-index:100}
+.back-link{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--mid-grey);text-decoration:none;display:flex;align-items:center;gap:8px;transition:color .2s}
+.back-link:hover{color:white}
+.back-link::before{content:'←'}
+.module-id{font-family:'DM Mono',monospace;font-size:11px;color:white}
+.module-id span{color:var(--red)}
+.progress-bar{height:3px;background:var(--warm-grey)}
+.progress-fill{height:100%;background:var(--red);width:0%;transition:width .5s}
+.module-hero{background:var(--navy);padding:56px 40px 48px;position:relative;overflow:hidden}
+.module-hero::before{content:'M2';position:absolute;right:40px;top:20px;font-family:'Playfair Display',serif;font-size:160px;font-weight:700;color:rgba(255,255,255,.03);line-height:1;pointer-events:none}
+.module-hero-inner{max-width:960px;margin:0 auto;position:relative;z-index:1}
+.module-kicker{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--red);margin-bottom:16px;display:flex;align-items:center;gap:10px}
+.module-kicker::before{content:'';width:24px;height:1px;background:var(--red);display:inline-block}
+.module-hero h1{font-family:'Playfair Display',serif;font-size:clamp(26px,3.5vw,42px);font-weight:700;color:white;line-height:1.2;margin-bottom:20px}
+.module-meta-bar{display:flex;gap:24px;flex-wrap:wrap;margin-bottom:28px}
+.meta-item{display:flex;align-items:center;gap:8px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--mid-grey)}
+.meta-item .dot{width:6px;height:6px;background:var(--red);flex-shrink:0}
+.prereqs{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-left:3px solid var(--red);padding:14px 18px;font-size:13px;color:rgba(255,255,255,.6);line-height:1.6;max-width:620px}
+.prereqs strong{color:white;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;display:block;margin-bottom:6px}
+.module-body{max-width:960px;margin:0 auto;padding:56px 40px}
+.section{margin-bottom:56px}
+.section-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--red);margin-bottom:20px;display:flex;align-items:center;gap:12px}
+.section-label::after{content:'';flex:1;height:1px;background:var(--warm-grey)}
+.objectifs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+.objectif-card{background:white;border:1px solid var(--warm-grey);padding:20px;border-top:3px solid var(--navy)}
+.bloom-level{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--mid-grey);margin-bottom:8px}
+.bloom-badge{background:var(--navy);color:white;padding:2px 7px;font-size:9px;border-radius:1px}
+.objectif-text{font-size:14px;color:var(--text);line-height:1.55}
+.objectif-indicator{margin-top:12px;padding-top:10px;border-top:1px solid var(--warm-grey);font-family:'DM Mono',monospace;font-size:10px;color:var(--mid-grey);line-height:1.5}
+.objectif-indicator::before{content:'↳ ';color:var(--red)}
+.mode-legend{display:flex;gap:20px;margin-bottom:20px;flex-wrap:wrap}
+.legend-item{display:flex;align-items:center;gap:8px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase}
+.legend-dot{width:10px;height:10px;flex-shrink:0;border-radius:1px}
+.dot-plenum{background:var(--plenum)}.dot-groupe{background:var(--groupe)}.dot-individuel{background:var(--individuel)}
+.deroulé-timeline{display:flex;flex-direction:column;gap:4px}
+.sequence{display:grid;grid-template-columns:80px 100px 1fr;gap:0;background:white;border:1px solid var(--warm-grey);overflow:hidden;transition:box-shadow .15s}
+.sequence:hover{box-shadow:0 4px 16px rgba(0,0,0,.07)}
+.seq-time{padding:16px 14px;font-family:'DM Mono',monospace;font-size:11px;color:var(--mid-grey);border-right:1px solid var(--warm-grey);display:flex;align-items:center;justify-content:center;text-align:center;background:#FDFBF8}
+.seq-mode{padding:16px 14px;display:flex;align-items:center;justify-content:center;border-right:1px solid var(--warm-grey)}
+.mode-badge{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;border-radius:1px;text-align:center;white-space:nowrap}
+.mode-plenum{background:rgba(26,74,138,.1);color:var(--plenum);border:1px solid rgba(26,74,138,.25)}
+.mode-groupe{background:rgba(42,122,74,.1);color:var(--groupe);border:1px solid rgba(42,122,74,.25)}
+.mode-individuel{background:rgba(122,58,26,.1);color:var(--individuel);border:1px solid rgba(122,58,26,.25)}
+.seq-content{padding:16px 20px}
+.seq-title{font-weight:600;font-size:14px;color:var(--navy);margin-bottom:4px;font-family:'Playfair Display',serif}
+.seq-desc{font-size:13px;color:#6A6560;line-height:1.5}
+.seq-tool{display:inline-flex;align-items:center;gap:5px;margin-top:8px;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.08em;text-transform:uppercase;background:rgba(193,0,31,.07);color:var(--red);padding:3px 8px;border-radius:1px}
+.seq-pause{background:#FDFBF8;border:1px dashed var(--warm-grey);padding:10px 20px 10px 80px}
+.seq-pause-text{font-family:'DM Mono',monospace;font-size:10px;color:var(--mid-grey);letter-spacing:.08em;text-transform:uppercase}
+.content-blocks{display:flex;flex-direction:column;gap:16px}
+.content-block{background:white;border:1px solid var(--warm-grey);padding:24px 28px}
+.content-block-title{font-family:'Playfair Display',serif;font-size:16px;font-weight:600;color:var(--navy);margin-bottom:12px;display:flex;align-items:center;gap:12px}
+.content-block-num{font-family:'DM Mono',monospace;font-size:11px;color:var(--mid-grey);flex-shrink:0}
+.content-block p{font-size:14px;color:#4A4540;line-height:1.7;margin-bottom:10px}
+.content-block p:last-child{margin-bottom:0}
+.content-block ul{list-style:none;display:flex;flex-direction:column;gap:7px;margin-top:10px}
+.content-block ul li{font-size:14px;color:#4A4540;display:flex;align-items:flex-start;gap:10px;line-height:1.5}
+.content-block ul li::before{content:'→';color:var(--red);flex-shrink:0;font-size:12px;margin-top:2px}
+.loi-tag{display:inline-flex;align-items:center;gap:5px;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.1em;text-transform:uppercase;background:rgba(10,22,40,.07);color:var(--navy);padding:3px 8px;border-radius:1px;margin-right:6px;margin-top:6px}
+.seco-tag{display:inline-flex;align-items:center;gap:5px;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.1em;text-transform:uppercase;background:rgba(193,0,31,.07);color:var(--red);padding:3px 8px;border-radius:1px;margin-top:10px}
+
+/* 7 conditions visual */
+.conditions-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-top:16px}
+.condition-card{background:#FDFBF8;border:1px solid var(--warm-grey);padding:16px}
+.cond-num{font-family:'DM Mono',monospace;font-size:22px;font-weight:400;color:var(--warm-grey);line-height:1;margin-bottom:8px}
+.cond-title{font-family:'Playfair Display',serif;font-size:13px;font-weight:600;color:var(--navy);margin-bottom:6px;line-height:1.25}
+.cond-art{font-family:'DM Mono',monospace;font-size:9px;color:var(--mid-grey);letter-spacing:.08em}
+
+/* Accordion */
+.accordion{border:1px solid var(--warm-grey);background:white}
+.accordion-item{border-bottom:1px solid var(--warm-grey)}
+.accordion-item:last-child{border-bottom:none}
+.accordion-trigger{width:100%;background:none;border:none;padding:18px 24px;text-align:left;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:16px;transition:background .15s}
+.accordion-trigger:hover{background:#FDFBF8}
+.acc-title{font-family:'Playfair Display',serif;font-size:15px;font-weight:600;color:var(--navy)}
+.acc-arrow{font-family:'DM Mono',monospace;font-size:12px;color:var(--mid-grey);transition:transform .25s;flex-shrink:0}
+.accordion-trigger.open .acc-arrow{transform:rotate(90deg)}
+.accordion-body{display:none;padding:0 24px 20px}
+.accordion-body.show{display:block}
+.accordion-body p{font-size:14px;color:#4A4540;line-height:1.7;margin-bottom:8px}
+.accordion-body ul{list-style:none;display:flex;flex-direction:column;gap:6px}
+.accordion-body ul li{font-size:14px;color:#4A4540;display:flex;align-items:flex-start;gap:10px;line-height:1.5}
+.accordion-body ul li::before{content:'→';color:var(--red);flex-shrink:0;font-size:12px;margin-top:2px}
+
+/* Quiz */
+.activite{background:var(--navy);padding:28px}
+.activite-header{display:flex;align-items:center;gap:14px;margin-bottom:16px}
+.activite-icon{width:32px;height:32px;background:var(--red);display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:10px;color:white;flex-shrink:0}
+.activite-meta{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--mid-grey)}
+.activite-title{color:white;font-family:'Playfair Display',serif;font-size:16px;font-weight:600}
+.activite-consigne{font-size:14px;color:rgba(255,255,255,.65);line-height:1.7;margin-bottom:20px}
+.question-card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);padding:18px 20px;margin-bottom:12px}
+.question-text{font-size:14px;color:white;margin-bottom:12px;line-height:1.5}
+.options{display:flex;flex-direction:column;gap:8px}
+.option{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);cursor:pointer;transition:background .15s;font-size:13px;color:rgba(255,255,255,.75);line-height:1.4}
+.option:hover{background:rgba(255,255,255,.1)}
+.option.correct{background:rgba(42,122,74,.25);border-color:rgba(42,122,74,.5);color:white}
+.option.wrong{background:rgba(193,0,31,.2);border-color:rgba(193,0,31,.4);color:rgba(255,255,255,.6)}
+.option-letter{font-family:'DM Mono',monospace;font-size:10px;color:var(--mid-grey);flex-shrink:0;margin-top:1px}
+.feedback{margin-top:10px;font-family:'DM Mono',monospace;font-size:11px;padding:8px 12px;display:none}
+.feedback.show{display:block}
+.feedback.ok{background:rgba(42,122,74,.2);color:#7FBA7A;border:1px solid rgba(42,122,74,.3)}
+.feedback.ko{background:rgba(193,0,31,.15);color:#E07070;border:1px solid rgba(193,0,31,.25)}
+
+/* Cas pratique */
+.cas-pratique{border:2px solid var(--navy);padding:28px;background:white}
+.cas-header{display:flex;align-items:center;gap:14px;margin-bottom:16px}
+.cas-icon{width:32px;height:32px;background:var(--navy);display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:10px;color:white;flex-shrink:0}
+.cas-meta{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--mid-grey)}
+.cas-title{font-family:'Playfair Display',serif;font-size:16px;font-weight:600;color:var(--navy)}
+.cas-scenario{background:#FDFBF8;border-left:3px solid var(--navy);padding:16px 20px;font-size:14px;color:var(--text);line-height:1.7;margin-bottom:20px;font-style:italic}
+.cas-questions{display:flex;flex-direction:column;gap:12px}
+.cas-question{padding:14px 16px;border:1px solid var(--warm-grey)}
+.cas-q-text{font-size:14px;color:var(--navy);font-weight:600;margin-bottom:8px}
+.cas-q-hint{font-family:'DM Mono',monospace;font-size:10px;color:var(--mid-grey);letter-spacing:.06em}
+.reveal-btn{margin-top:12px;background:none;border:1px solid var(--warm-grey);padding:7px 14px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--mid-grey);cursor:pointer;transition:all .2s}
+.reveal-btn:hover{background:var(--navy);color:white;border-color:var(--navy)}
+.cas-answer{display:none;margin-top:10px;font-size:13px;color:#4A4540;line-height:1.6;background:rgba(10,22,40,.04);padding:12px;border-left:2px solid var(--navy)}
+.cas-answer.show{display:block}
+
+/* Indicateurs */
+.indicateurs-table{width:100%;border-collapse:collapse}
+.indicateurs-table th{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--mid-grey);text-align:left;padding:10px 16px;border-bottom:2px solid var(--warm-grey);background:#FDFBF8}
+.indicateurs-table td{font-size:13px;padding:12px 16px;border-bottom:1px solid var(--warm-grey);color:var(--text);vertical-align:top;background:white}
+.indicateurs-table tr:last-child td{border-bottom:none}
+.indicateurs-table td:first-child{font-family:'DM Mono',monospace;font-size:10px;color:var(--mid-grey);white-space:nowrap}
+
+.module-footer{background:var(--navy);padding:28px 40px}
+.module-footer-inner{max-width:960px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px}
+.footer-nav{display:flex;gap:16px}
+.btn{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;padding:10px 20px;border:none;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:all .2s}
+.btn-primary{background:var(--red);color:white}
+.btn-primary:hover{background:#8B0016}
+.btn-secondary{background:transparent;color:var(--mid-grey);border:1px solid rgba(255,255,255,.15)}
+.btn-secondary:hover{color:white;border-color:rgba(255,255,255,.4)}
+.footer-progress-text{font-family:'DM Mono',monospace;font-size:10px;color:var(--mid-grey)}
+@media(max-width:768px){
+  .topbar,.module-hero,.module-body,.module-footer{padding-left:20px;padding-right:20px}
+  .sequence{grid-template-columns:60px 1fr}.seq-mode{display:none}
+  .objectifs-grid,.conditions-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a class="back-link" href="index.html">Retour au portail</a>
+  <div class="module-id">Formation ORP — <span>Module M2</span></div>
+</div>
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+<section class="module-hero">
+  <div class="module-hero-inner">
+    <p class="module-kicker">Formation de base — Parcours A</p>
+    <h1>Assurance-chômage —<br><em>cadre légal LACI</em></h1>
+    <div class="module-meta-bar">
+      <div class="meta-item"><span class="dot"></span>1 journée (6h)</div>
+      <div class="meta-item"><span class="dot"></span>CP &amp; Coordination ORP</div>
+      <div class="meta-item"><span class="dot"></span>Niveau débutant</div>
+    </div>
+    <div class="prereqs">
+      <strong>Prérequis</strong>
+      Avoir suivi le module M1. Avoir effectué la formation en ligne « Être au chômage, ce que vous devez savoir ». Avoir lu le Résumé de l'assurance-chômage (Support 03).
+    </div>
+  </div>
+</section>
+
+<div class="module-body">
+
+  <!-- OBJECTIFS -->
+  <div class="section">
+    <div class="section-label">Objectifs d'apprentissage · Taxonomie de Bloom</div>
+    <div class="objectifs-grid">
+      <div class="objectif-card">
+        <div class="bloom-level"><span class="bloom-badge">Niveau 2 — Compréhension</span></div>
+        <div class="objectif-text">Comprendre la structure de la LACI, ses sources et son articulation avec la LPGA, l'OACI et la LMC.</div>
+        <div class="objectif-indicator">L'apprenant explique la hiérarchie des sources et la logique de la loi sans consulter le document.</div>
+      </div>
+      <div class="objectif-card">
+        <div class="bloom-level"><span class="bloom-badge">Niveau 1 — Mémorisation</span></div>
+        <div class="objectif-text">Connaître le rôle des autorités compétentes : SECO, autorité cantonale, caisses de chômage, ORP.</div>
+        <div class="objectif-indicator">L'apprenant attribue correctement à chaque autorité sa fonction dans le système AC.</div>
+      </div>
+      <div class="objectif-card">
+        <div class="bloom-level"><span class="bloom-badge">Niveau 3 — Application</span></div>
+        <div class="objectif-text">Appliquer les 7 conditions du droit à l'indemnité pour analyser une situation concrète de demandeur d'emploi.</div>
+        <div class="objectif-indicator">L'apprenant vérifie correctement les 7 conditions sur un cas pratique donné.</div>
+      </div>
+      <div class="objectif-card">
+        <div class="bloom-level"><span class="bloom-badge">Niveau 3 — Application</span></div>
+        <div class="objectif-text">Renseigner et orienter un demandeur d'emploi sur ses droits et ses obligations fondamentaux.</div>
+        <div class="objectif-indicator">L'apprenant répond correctement à 3 questions types d'un DE sur ses droits en situation simulée.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DÉROULÉ MATIN -->
+  <div class="section">
+    <div class="section-label">Déroulé pédagogique — Matinée · LACI : cadre légal et conditions du droit</div>
+    <div class="mode-legend">
+      <div class="legend-item"><div class="legend-dot dot-plenum"></div>Plénum</div>
+      <div class="legend-item"><div class="legend-dot dot-groupe"></div>Groupe</div>
+      <div class="legend-item"><div class="legend-dot dot-individuel"></div>Individuel</div>
+    </div>
+    <div class="deroulé-timeline">
+      <div class="sequence">
+        <div class="seq-time">08h30</div>
+        <div class="seq-mode"><span class="mode-badge mode-plenum">Plénum</span></div>
+        <div class="seq-content">
+          <div class="seq-title">Introduction — Pourquoi la LACI existe-t-elle ?</div>
+          <div class="seq-desc">Historique de l'assurance-chômage en Suisse (1893 → LACI 1983 → révisions). Les 4 formes de chômage. Buts et 4 principes de l'AC selon la Constitution fédérale (art. 114 Cst.).</div>
+        </div>
+      </div>
+      <div class="sequence">
+        <div class="seq-time">09h00</div>
+        <div class="seq-mode"><span class="mode-badge mode-individuel">Individuel</span></div>
+        <div class="seq-content">
+          <div class="seq-title">Exploration : lecture commentée de la structure de la LACI</div>
+          <div class="seq-desc">Les participants parcourent la table des matières commentée de la LACI. Identification des 9 titres, de leur logique, du lien LACI/OACI/LPGA. Annotation individuelle.
+          <span class="seq-tool">Support 03 — Résumé AC</span></div>
+        </div>
+      </div>
+      <div class="sequence">
+        <div class="seq-time">09h30</div>
+        <div class="seq-mode"><span class="mode-badge mode-plenum">Plénum</span></div>
+        <div class="seq-content">
+          <div class="seq-title">Sources du droit et autorités compétentes</div>
+          <div class="seq-desc">Hiérarchie des sources : LACI, OACI, LPGA, LMC, circulaires SECO, jurisprudence. Rôle de chaque autorité : SECO (surveillance), autorité cantonale (décisions aptitude/sanctions), caisses (indemnisation), ORP (placement/conseil).
+          <span class="seq-tool">Indicateurs SECO</span></div>
+        </div>
+      </div>
+      <div class="sequence">
+        <div class="seq-time">10h00</div>
+        <div class="seq-mode"><span class="mode-badge mode-groupe">Groupe</span></div>
+        <div class="seq-content">
+          <div class="seq-title">Activité : Les 7 conditions du droit — tri et analyse</div>
+          <div class="seq-desc">En binômes : à partir de 7 fiches décrivant chacune une condition, les participants les classent, les expliquent avec leurs mots et identifient un exemple de situation qui satisfait ou ne satisfait pas la condition.</div>
+        </div>
+      </div>
+      <div class="seq-pause"><span class="seq-pause-text">Pause — 10h45 → 11h00</span></div>
+      <div class="sequence">
+        <div class="seq-time">11h00</div>
+        <div class="seq-mode"><span class="mode-badge mode-plenum">Plénum</span></div>
+        <div class="seq-content">
+          <div class="seq-title">Approfondissement — Aptitude au placement et devoirs de l'assuré</div>
+          <div class="seq-desc">Définition et critères de l'aptitude au placement (art. 15 LACI). Devoirs de l'assuré : recherches d'emploi, contrôle, disponibilité. Lien avec le rôle du CP dans le suivi du portefeuille DE.
+          <span class="seq-tool">PlaSta — Rubrique aptitude</span></div>
+        </div>
+      </div>
+      <div class="sequence">
+        <div class="seq-time">11h45</div>
+        <div class="seq-mode"><span class="mode-badge mode-individuel">Individuel</span></div>
+        <div class="seq-content">
+          <div class="seq-title">Quiz de mi-journée — Conditions du droit</div>
+          <div class="seq-desc">Quiz individuel sur les 7 conditions et les autorités compétentes. Correction collective. Identification des points à consolider l'après-midi.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DÉROULÉ APRÈS-MIDI -->
+  <div class="section">
+    <div class="section-label">Déroulé pédagogique — Après-midi · Indemnisation, sanctions, prestations entreprises</div>
+    <div class="deroulé-timeline">
+      <div class="sequence">
+        <div class="seq-time">13h15</div>
+        <div class="seq-mode"><span class="mode-badge mode-plenum">Plénum</span></div>
+        <div class="seq-content">
+          <div class="seq-title">L'indemnisation — Gain assuré, indemnité journalière, droit maximum</div>
+          <div class="seq-desc">Gain assuré (GA) et montant forfaitaire. Calcul de l'indemnité journalière (80%/70%). Gain intermédiaire (GI). Droit maximum selon période de cotisation. Délais d'attente général et spéciaux.
+          <span class="seq-tool">Résumé LACI ch. 9</span></div>
+        </div>
+      </div>
+      <div class="sequence">
+        <div class="seq-time">14h00</div>
+        <div class="seq-mode"><span class="mode-badge mode-groupe">Groupe</span></div>
+        <div class="seq-content">
+          <div class="seq-title">Cas pratique : analyse d'une situation d'indemnisation</div>
+          <div class="seq-desc">En groupes de 3 : analyse d'un cas fictif complet (profil DE, historique, calcul indicatif du droit). Identification des conditions remplies, du type d'indemnisation applicable et des questions à soumettre à la caisse.</div>
+        </div>
+      </div>
+      <div class="sequence">
+        <div class="seq-time">14h45</div>
+        <div class="seq-mode"><span class="mode-badge mode-plenum">Plénum</span></div>
+        <div class="seq-content">
+          <div class="seq-title">Sanctions et suspensions — Motifs, faute, procédure</div>
+          <div class="seq-desc">Principaux motifs de suspension (art. 30 LACI). Notion de faute (légère/grave). Durée maximale 60 jours. Barème SECO. Distinction caisse / autorité cantonale. Voies de droit.
+          <span class="seq-tool">Barème suspensions SECO</span></div>
+        </div>
+      </div>
+      <div class="seq-pause"><span class="seq-pause-text">Pause — 15h30 → 15h45</span></div>
+      <div class="sequence">
+        <div class="seq-time">15h45</div>
+        <div class="seq-mode"><span class="mode-badge mode-plenum">Plénum</span></div>
+        <div class="seq-content">
+          <div class="seq-title">Prestations entreprises — ICI, RHT, Intempéries</div>
+          <div class="seq-desc">Indemnité en cas d'insolvabilité (ICI) : nature, étendue, procédure. Réduction de l'horaire de travail (RHT) : conditions, durée max 12 mois sur 24, procédure employeur. Indemnité intempéries (INT) : branches concernées, conditions.</div>
+        </div>
+      </div>
+      <div class="sequence">
+        <div class="seq-time">16h30</div>
+        <div class="seq-mode"><span class="mode-badge mode-individuel">Individuel</span></div>
+        <div class="seq-content">
+          <div class="seq-title">Quiz final de consolidation + grille d'autoévaluation</div>
+          <div class="seq-desc">Quiz sur l'ensemble du module M2 (conditions du droit, indemnisation, sanctions, prestations entreprises). Complétion de la grille d'autoévaluation. Remise du dossier stagiaire M3.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTENU — 7 CONDITIONS -->
+  <div class="section">
+    <div class="section-label">Les 7 conditions du droit à l'indemnité de chômage</div>
+    <div class="content-block" style="margin-bottom:16px">
+      <p>Pour avoir droit à l'indemnité de chômage, l'assuré doit remplir simultanément les sept conditions suivantes (art. 8 LACI). L'absence d'une seule condition exclut le droit aux prestations.</p>
+    </div>
+    <div class="conditions-grid">
+      <div class="condition-card">
+        <div class="cond-num">1</div>
+        <div class="cond-title">Être sans emploi ou partiellement sans emploi</div>
+        <div class="cond-art">Art. 10 LACI</div>
+      </div>
+      <div class="condition-card">
+        <div class="cond-num">2</div>
+        <div class="cond-title">Subir une perte de travail à prendre en considération</div>
+        <div class="cond-art">Art. 11 LACI</div>
+      </div>
+      <div class="condition-card">
+        <div class="cond-num">3</div>
+        <div class="cond-title">Être domicilié en Suisse</div>
+        <div class="cond-art">Art. 12 LACI</div>
+      </div>
+      <div class="condition-card">
+        <div class="cond-num">4</div>
+        <div class="cond-title">Avoir achevé la scolarité obligatoire et ne pas avoir atteint l'âge AVS</div>
+        <div class="cond-art">Art. 14 LACI</div>
+      </div>
+      <div class="condition-card">
+        <div class="cond-num">5</div>
+        <div class="cond-title">Remplir la période de cotisation ou en être libéré</div>
+        <div class="cond-art">Art. 13–14 LACI</div>
+      </div>
+      <div class="condition-card">
+        <div class="cond-num">6</div>
+        <div class="cond-title">Être apte au placement</div>
+        <div class="cond-art">Art. 15 LACI</div>
+      </div>
+      <div class="condition-card">
+        <div class="cond-num">7</div>
+        <div class="cond-title">Satisfaire aux exigences du contrôle (devoirs de l'assuré)</div>
+        <div class="cond-art">Art. 17 LACI</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ACCORDION — PRINCIPES -->
+  <div class="section">
+    <div class="section-label">Les 4 principes de l'assurance-chômage</div>
+    <div class="accordion">
+      <div class="accordion-item">
+        <button class="accordion-trigger" onclick="toggleAcc(this)">
+          <span class="acc-title">1. Le principe de solidarité</span>
+          <span class="acc-arrow">▶</span>
+        </button>
+        <div class="accordion-body">
+          <p>L'assujettissement à l'assurance-chômage est obligatoire pour tous les salariés. Le taux de cotisation en pourcentage est uniforme pour toutes les catégories de travailleurs, quel que soit le risque de chômage encouru.</p>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-trigger" onclick="toggleAcc(this)">
+          <span class="acc-title">2. Le principe de l'obligation de diminuer le dommage</span>
+          <span class="acc-arrow">▶</span>
+        </button>
+        <div class="accordion-body">
+          <p>Les assurés doivent tout mettre en œuvre pour éviter de devoir recourir à l'assurance-chômage et, une fois qu'elle est intervenue, en limiter le dommage. Cela implique l'obligation d'accepter un emploi convenable et d'effectuer des recherches d'emploi.</p>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-trigger" onclick="toggleAcc(this)">
+          <span class="acc-title">3. Le principe de priorité du placement et de subsidiarité de l'AC</span>
+          <span class="acc-arrow">▶</span>
+        </button>
+        <div class="accordion-body">
+          <p>Le placement est prioritaire par rapport à l'indemnisation. Il est stimulé par des moyens attractifs (remboursement des frais de déplacement, gain intermédiaire) et par des sanctions lorsque l'assuré néglige ses obligations. Des moyens modernes tels que PlaSta permettent de consulter les places vacantes dans et hors de la région du domicile.</p>
+          <span class="loi-tag">PlaSta — outil de placement</span>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-trigger" onclick="toggleAcc(this)">
+          <span class="acc-title">4. Le principe de double stratégie de l'assurance-chômage</span>
+          <span class="acc-arrow">▶</span>
+        </button>
+        <div class="accordion-body">
+          <p>L'assurance-chômage compense d'une part les pertes de travail et le manque à gagner qui en résulte, et prévoit d'autre part des moyens pour prévenir et combattre le chômage par le biais des mesures du marché du travail (MMT).</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ACTIVITÉ QUIZ -->
+  <div class="section">
+    <div class="section-label">Activité — Quiz de consolidation (matinée)</div>
+    <div class="activite">
+      <div class="activite-header">
+        <div class="activite-icon">Q</div>
+        <div>
+          <div class="activite-meta">Individuel · 10 minutes · Niveaux 1–3 Bloom</div>
+          <div class="activite-title">Quiz — Conditions du droit et autorités compétentes</div>
+        </div>
+      </div>
+      <p class="activite-consigne">Testez votre compréhension des points-clés de la matinée. Une seule bonne réponse par question.</p>
+
+      <div class="question-card" id="q1">
+        <div class="question-text">1. Combien de conditions doivent être simultanément remplies pour avoir droit à l'indemnité de chômage ?</div>
+        <div class="options">
+          <div class="option" onclick="answer(this,'q1',false)"><span class="option-letter">A</span>5 conditions</div>
+          <div class="option" onclick="answer(this,'q1',false)"><span class="option-letter">B</span>6 conditions</div>
+          <div class="option" onclick="answer(this,'q1',true)"><span class="option-letter">C</span>7 conditions</div>
+          <div class="option" onclick="answer(this,'q1',false)"><span class="option-letter">D</span>4 conditions</div>
+        </div>
+        <div class="feedback ok" id="q1-ok">✓ Correct. L'art. 8 LACI prévoit 7 conditions cumulatives. L'absence d'une seule condition suffit à exclure le droit aux prestations.</div>
+        <div class="feedback ko" id="q1-ko">✗ Non. Il y a 7 conditions cumulatives selon l'art. 8 LACI. Toutes doivent être remplies simultanément.</div>
+      </div>
+
+      <div class="question-card" id="q2">
+        <div class="question-text">2. Qui décide de l'aptitude au placement d'un demandeur d'emploi ?</div>
+        <div class="options">
+          <div class="option" onclick="answer(this,'q2',false)"><span class="option-letter">A</span>Le conseiller en personnel (CP)</div>
+          <div class="option" onclick="answer(this,'q2',false)"><span class="option-letter">B</span>La caisse de chômage</div>
+          <div class="option" onclick="answer(this,'q2',true)"><span class="option-letter">C</span>L'autorité cantonale</div>
+          <div class="option" onclick="answer(this,'q2',false)"><span class="option-letter">D</span>Le médecin-conseil SECO</div>
+        </div>
+        <div class="feedback ok" id="q2-ok">✓ Correct. L'autorité cantonale examine l'aptitude au placement sur la base des dossiers soumis par les ORP et les caisses.</div>
+        <div class="feedback ko" id="q2-ko">✗ Non. C'est l'autorité cantonale qui se prononce sur l'aptitude au placement, sur la base des dossiers que lui soumettent les ORP et les caisses.</div>
+      </div>
+
+      <div class="question-card" id="q3">
+        <div class="question-text">3. La LACI est entrée en vigueur le :</div>
+        <div class="options">
+          <div class="option" onclick="answer(this,'q3',false)"><span class="option-letter">A</span>1er janvier 1952</div>
+          <div class="option" onclick="answer(this,'q3',true)"><span class="option-letter">B</span>1er janvier 1983</div>
+          <div class="option" onclick="answer(this,'q3',false)"><span class="option-letter">C</span>1er janvier 1995</div>
+          <div class="option" onclick="answer(this,'q3',false)"><span class="option-letter">D</span>1er avril 2011</div>
+        </div>
+        <div class="feedback ok" id="q3-ok">✓ Correct. La LACI est entrée en vigueur le 1er janvier 1983, remplaçant l'arrêté fédéral du 8 octobre 1976 et la loi fédérale du 22 juin 1951.</div>
+        <div class="feedback ko" id="q3-ko">✗ Non. La LACI est entrée en vigueur le 1er janvier 1983. La loi du 22 juin 1951 était la LAC, précurseur non obligatoire.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CAS PRATIQUE -->
+  <div class="section">
+    <div class="section-label">Activité — Cas pratique (après-midi)</div>
+    <div class="cas-pratique">
+      <div class="cas-header">
+        <div class="cas-icon">CP</div>
+        <div>
+          <div class="cas-meta">Groupe · 30 minutes · Niveaux 3–4 Bloom</div>
+          <div class="cas-title">Cas pratique — Analyse des 7 conditions : Monsieur Fernandez</div>
+        </div>
+      </div>
+      <div class="cas-scenario">
+        M. Fernandez, 42 ans, ressortissant espagnol domicilié à Genève depuis 8 ans, a été licencié il y a 3 semaines suite à la fermeture du département où il travaillait. Il a cotisé à l'AC pendant 14 mois au cours des 2 dernières années. Il est actuellement en arrêt maladie à 50% pour raisons psychologiques, mais son médecin certifie qu'il peut chercher un emploi à temps partiel. Il n'a pas encore déposé de dossier de demande d'indemnité.
+      </div>
+      <div class="cas-questions">
+        <div class="cas-question">
+          <div class="cas-q-text">1. Passez en revue les 7 conditions du droit. Lesquelles semblent remplies ? Lesquelles posent question ?</div>
+          <div class="cas-q-hint">Traitez chaque condition séparément. Identifiez les informations manquantes.</div>
+          <button class="reveal-btn" onclick="revealAnswer(this)">Voir les éléments de réponse</button>
+          <div class="cas-answer">Conditions a priori remplies : domicile en Suisse (✓), âge (✓ entre scolarité et AVS), période de cotisation (✓ 14 mois), chômage/perte de travail (✓ licenciement). Conditions à examiner : aptitude au placement (arrêt 50% — aptitude partielle possible, art. 15 LACI), devoirs de l'assuré (pas encore inscrit — délai à vérifier). L'aptitude partielle peut ouvrir droit à une indemnité partielle.</div>
+        </div>
+        <div class="cas-question">
+          <div class="cas-q-text">2. Quelle autorité doit se prononcer sur son aptitude au placement compte tenu de l'arrêt maladie à 50% ?</div>
+          <div class="cas-q-hint">Relisez la répartition des compétences entre autorités.</div>
+          <button class="reveal-btn" onclick="revealAnswer(this)">Voir les éléments de réponse</button>
+          <div class="cas-answer">C'est l'autorité cantonale qui se prononce sur l'aptitude au placement. L'ORP (CP) soumet le dossier avec le certificat médical. L'autorité cantonale peut reconnaître une aptitude partielle, qui ouvre droit à une indemnité proportionnelle. La caisse ne peut pas se prononcer sur ce point.</div>
+        </div>
+        <div class="cas-question">
+          <div class="cas-q-text">3. Quel est votre rôle en tant que CP dans ce dossier ? Quelles seraient vos premières démarches ?</div>
+          <div class="cas-q-hint">Pensez à PlaSta, à l'orientation vers les bonnes autorités et à l'information du DE.</div>
+          <button class="reveal-btn" onclick="revealAnswer(this)">Voir les éléments de réponse</button>
+          <div class="cas-answer">Premières démarches du CP : (1) Inscrire M. Fernandez dans PlaSta et ouvrir son dossier DE. (2) Vérifier les conditions du droit et collecter les pièces justificatives. (3) Transmettre le dossier à l'autorité cantonale pour examen de l'aptitude au placement. (4) Informer M. Fernandez sur ses droits, ses obligations de recherche d'emploi (à hauteur de son aptitude) et les démarches auprès de la caisse. Le rôle du CP est de conseiller et d'orienter, pas de décider de l'aptitude.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INDICATEURS EVAL -->
+  <div class="section">
+    <div class="section-label">Indicateurs d'évaluation du module</div>
+    <table class="indicateurs-table">
+      <thead>
+        <tr>
+          <th>Niveau (Kirkpatrick)</th>
+          <th>Indicateur</th>
+          <th>Outil de mesure</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Niv. 1 — Satisfaction</td>
+          <td>Le participant juge les cas pratiques représentatifs de la réalité terrain et le contenu directement applicable</td>
+          <td>Questionnaire de satisfaction fin de journée</td>
+        </tr>
+        <tr>
+          <td>Niv. 2 — Apprentissage</td>
+          <td>L'apprenant identifie correctement les 7 conditions et les attribue aux bonnes autorités compétentes</td>
+          <td>Quiz de consolidation — score ≥ 5/7 conditions correctement traitées sur le cas pratique</td>
+        </tr>
+        <tr>
+          <td>Niv. 3 — Transfert</td>
+          <td>Dans les 4 semaines, le CP vérifie correctement les conditions du droit lors de l'ouverture de dossiers réels</td>
+          <td>Contrôle qualité sur 5 premiers dossiers — grille chef de groupe</td>
+        </tr>
+        <tr>
+          <td>Niv. 4 — Effets</td>
+          <td>Réduction des dossiers renvoyés par la caisse pour conditions du droit incomplètes</td>
+          <td>Indicateurs SECO — taux de conformité dossiers, 3 mois post-formation</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<div class="module-footer">
+  <div class="module-footer-inner">
+    <div class="footer-nav">
+      <a class="btn btn-secondary" href="module-m1.html">← M1</a>
+      <a class="btn btn-secondary" href="index.html">Portail</a>
+      <a class="btn btn-primary" href="index.html">M3 — Bientôt disponible →</a>
+    </div>
+    <div class="footer-progress-text">M2 / 11 — Formation de base OCE/ORP 2026</div>
+  </div>
+</div>
+
+<script>
+window.addEventListener('scroll', function(){
+  const d = document.documentElement;
+  const pct = (d.scrollTop / (d.scrollHeight - d.clientHeight)) * 100;
+  document.getElementById('progressFill').style.width = Math.min(pct,100) + '%';
+});
+
+function answer(el, qid, correct) {
+  const card = document.getElementById(qid);
+  if (card.dataset.answered) return;
+  card.dataset.answered = true;
+  el.classList.add(correct ? 'correct' : 'wrong');
+  if (!correct) {
+    card.querySelectorAll('.option').forEach(o => {
+      if(o.onclick && o.onclick.toString().includes('true')) o.classList.add('correct');
+    });
+  }
+  document.getElementById(qid + (correct ? '-ok' : '-ko')).classList.add('show');
+}
+
+function toggleAcc(btn) {
+  const body = btn.nextElementSibling;
+  btn.classList.toggle('open');
+  body.classList.toggle('show');
+}
+
+function revealAnswer(btn) {
+  btn.nextElementSibling.classList.add('show');
+  btn.style.display = 'none';
+}
+</script>
+</body>
+</html>
