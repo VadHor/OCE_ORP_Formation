@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Formation CP — OCE/ORP Genève</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy:   #0F1F3D;
+    --navy2:  #1B3A6B;
+    --blue:   #2E5BA8;
+    --blue2:  #4A90D9;
+    --teal:   #0A7E8C;
+    --green:  #22C55E;
+    --orange: #E07B2A;
+    --slate:  #8AAFD4;
+    --muted:  #94A3B8;
+    --line:   rgba(74,144,217,.18);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--navy);
+    color: #E2E8F0;
+    overflow-x: hidden;
+  }
+
+  /* ── NOISE TEXTURE ── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0; z-index: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    position: relative; z-index: 1;
+    min-height: 100vh;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 80px 40px 60px;
+    background: radial-gradient(ellipse 80% 60% at 60% 40%, #1B3A6B 0%, #0F1F3D 70%);
+    overflow: hidden;
+  }
+  .hero::after {
+    content: '';
+    position: absolute; top: -200px; right: -200px;
+    width: 700px; height: 700px;
+    background: radial-gradient(circle, rgba(74,144,217,.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(74,144,217,.12);
+    border: 1px solid rgba(74,144,217,.3);
+    border-radius: 99px;
+    padding: 6px 16px;
+    font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--blue2);
+    margin-bottom: 32px;
+    width: fit-content;
+  }
+  .hero h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(36px, 6vw, 72px);
+    line-height: 1.05;
+    color: #fff;
+    max-width: 820px;
+    margin-bottom: 12px;
+  }
+  .hero h1 em {
+    font-style: italic;
+    color: var(--blue2);
+  }
+  .hero-sub {
+    font-size: 18px; font-weight: 300; color: var(--slate);
+    max-width: 560px; line-height: 1.6; margin-bottom: 48px;
+  }
+  .hero-ctas {
+    display: flex; gap: 12px; flex-wrap: wrap;
+  }
+  .btn-primary {
+    padding: 14px 28px;
+    background: linear-gradient(135deg, var(--blue2), var(--blue));
+    border: none; border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px; font-weight: 700; color: #fff;
+    cursor: pointer; text-decoration: none;
+    transition: transform .2s, box-shadow .2s;
+    box-shadow: 0 4px 24px rgba(74,144,217,.3);
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(74,144,217,.4); }
+  .btn-ghost {
+    padding: 14px 28px;
+    background: transparent;
+    border: 1px solid rgba(74,144,217,.4); border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px; font-weight: 600; color: var(--blue2);
+    cursor: pointer; text-decoration: none;
+    transition: background .2s, border-color .2s;
+  }
+  .btn-ghost:hover { background: rgba(74,144,217,.1); border-color: var(--blue2); }
+
+  /* ── STATS ── */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1px;
+    background: var(--line);
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    position: relative; z-index: 1;
+  }
+  .stat {
+    background: var(--navy);
+    padding: 32px 28px;
+    text-align: center;
+  }
+  .stat-num {
+    font-family: 'DM Serif Display', serif;
+    font-size: 42px; color: var(--blue2);
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .stat-label {
+    font-size: 12px; font-weight: 500; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 1.5px;
+  }
+
+  /* ── SECTIONS ── */
+  section {
+    position: relative; z-index: 1;
+    padding: 80px 40px;
+    max-width: 1080px; margin: 0 auto;
+  }
+  .section-label {
+    font-size: 11px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--blue2); margin-bottom: 12px;
+  }
+  .section-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(28px, 4vw, 42px);
+    color: #fff; margin-bottom: 16px;
+    line-height: 1.15;
+  }
+  .section-desc {
+    font-size: 16px; color: var(--muted); max-width: 620px; line-height: 1.7;
+    margin-bottom: 48px;
+  }
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--line), transparent);
+    margin: 0;
+  }
+
+  /* ── MODULES GRID ── */
+  .modules-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 12px;
+  }
+  .module-card {
+    background: #152A4E;
+    border: 1px solid rgba(46,91,168,.35);
+    border-radius: 10px;
+    padding: 16px 18px;
+    transition: border-color .2s, transform .2s;
+    position: relative; overflow: hidden;
+  }
+  .module-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  }
+  .module-card:hover { border-color: var(--blue2); transform: translateY(-2px); }
+  .module-card.legal::before { background: var(--orange); }
+  .module-card.outils::before { background: var(--blue2); }
+  .module-card.ops::before { background: var(--teal); }
+  .module-card.eval::before { background: var(--green); }
+  .module-card.instit::before { background: var(--slate); }
+  .module-id {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 32px; height: 32px; border-radius: 7px;
+    background: var(--navy2);
+    font-size: 11px; font-weight: 800; color: #fff;
+    margin-bottom: 10px;
+  }
+  .module-title {
+    font-size: 14px; font-weight: 700; color: #E2E8F0;
+    margin-bottom: 6px; line-height: 1.3;
+  }
+  .module-meta {
+    display: flex; gap: 8px; align-items: center;
+    font-size: 11px; color: var(--muted);
+  }
+  .tag {
+    padding: 2px 8px;
+    background: rgba(15,31,61,.8);
+    border: 1px solid rgba(74,144,217,.2);
+    border-radius: 99px;
+    font-size: 10px; font-weight: 600; color: var(--muted);
+  }
+
+  /* ── IA LEVELS ── */
+  .ia-stack {
+    display: flex; flex-direction: column; gap: 0;
+    border: 1px solid rgba(46,91,168,.3);
+    border-radius: 12px;
+    overflow: hidden;
+    max-width: 760px;
+  }
+  .ia-level {
+    padding: 28px 32px;
+    display: grid; grid-template-columns: 60px 1fr auto;
+    align-items: center; gap: 20px;
+    border-bottom: 1px solid rgba(46,91,168,.2);
+    transition: background .2s;
+  }
+  .ia-level:last-child { border-bottom: none; }
+  .ia-level:hover { background: rgba(74,144,217,.06); }
+  .ia-num {
+    font-family: 'DM Serif Display', serif;
+    font-size: 36px; font-weight: 400;
+    line-height: 1;
+  }
+  .ia-level.l1 { background: rgba(15,31,61,.5); }
+  .ia-level.l1 .ia-num { color: var(--blue2); }
+  .ia-level.l2 { background: rgba(10,126,140,.08); }
+  .ia-level.l2 .ia-num { color: var(--teal); }
+  .ia-level.l3 { background: rgba(34,197,94,.06); }
+  .ia-level.l3 .ia-num { color: var(--green); }
+  .ia-body h3 {
+    font-size: 16px; font-weight: 700; color: #fff;
+    margin-bottom: 4px;
+  }
+  .ia-body p { font-size: 13px; color: var(--muted); line-height: 1.5; }
+  .ia-badge {
+    font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+    padding: 4px 12px; border-radius: 99px; white-space: nowrap;
+  }
+  .ia-level.l1 .ia-badge { background: rgba(74,144,217,.15); color: var(--blue2); border: 1px solid rgba(74,144,217,.3); }
+  .ia-level.l2 .ia-badge { background: rgba(10,126,140,.15); color: var(--teal); border: 1px solid rgba(10,126,140,.3); }
+  .ia-level.l3 .ia-badge { background: rgba(34,197,94,.12); color: var(--green); border: 1px solid rgba(34,197,94,.25); }
+
+  /* ── POC CARDS ── */
+  .poc-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 20px;
+  }
+  .poc-card {
+    background: #152A4E;
+    border: 1px solid rgba(46,91,168,.35);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: transform .2s, box-shadow .2s;
+  }
+  .poc-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 16px 48px rgba(0,0,0,.4);
+  }
+  .poc-header {
+    padding: 24px 24px 0;
+    display: flex; justify-content: space-between; align-items: flex-start;
+  }
+  .poc-icon {
+    width: 48px; height: 48px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+  }
+  .poc-tag {
+    font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+    padding: 4px 10px; border-radius: 99px;
+  }
+  .poc-body { padding: 16px 24px 24px; }
+  .poc-body h3 {
+    font-size: 18px; font-weight: 700; color: #fff;
+    margin-bottom: 10px;
+  }
+  .poc-body p { font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 16px; }
+  .poc-features { list-style: none; margin-bottom: 20px; }
+  .poc-features li {
+    font-size: 12px; color: #CBD5E1;
+    padding: 5px 0;
+    border-bottom: 1px solid rgba(46,91,168,.15);
+    display: flex; gap: 8px; align-items: center;
+  }
+  .poc-features li::before { content: '›'; color: var(--blue2); font-weight: 700; }
+
+  /* ── SECO TABLE ── */
+  .compare-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border: 1px solid rgba(46,91,168,.3);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .compare-table th {
+    background: var(--navy2);
+    padding: 14px 18px;
+    font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+    color: var(--slate); text-align: left;
+    border-bottom: 1px solid rgba(46,91,168,.3);
+  }
+  .compare-table td {
+    padding: 13px 18px;
+    font-size: 13px; color: #CBD5E1;
+    border-bottom: 1px solid rgba(46,91,168,.12);
+  }
+  .compare-table tr:last-child td { border-bottom: none; }
+  .compare-table tr:nth-child(even) td { background: rgba(15,31,61,.4); }
+  .compare-table .highlight { color: var(--blue2); font-weight: 600; }
+
+  /* ── ROADMAP ── */
+  .roadmap {
+    display: flex; flex-direction: column; gap: 0;
+    position: relative;
+  }
+  .roadmap::before {
+    content: '';
+    position: absolute; left: 20px; top: 0; bottom: 0; width: 2px;
+    background: linear-gradient(180deg, var(--blue2), var(--teal), transparent);
+  }
+  .rm-item {
+    display: grid; grid-template-columns: 44px 1fr;
+    gap: 20px; padding: 20px 0;
+    position: relative;
+  }
+  .rm-dot {
+    width: 40px; height: 40px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 800;
+    flex-shrink: 0; z-index: 1;
+    border: 2px solid;
+  }
+  .rm-dot.done { background: rgba(34,197,94,.15); border-color: var(--green); color: var(--green); }
+  .rm-dot.active { background: rgba(74,144,217,.2); border-color: var(--blue2); color: var(--blue2); }
+  .rm-dot.soon { background: rgba(15,31,61,.8); border-color: rgba(46,91,168,.3); color: var(--muted); }
+  .rm-content { padding-top: 8px; }
+  .rm-period { font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+  .rm-title { font-size: 15px; font-weight: 700; color: #E2E8F0; margin-bottom: 4px; }
+  .rm-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
+  .rm-badges { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+  .rm-badge {
+    font-size: 10px; font-weight: 600;
+    padding: 2px 8px; border-radius: 99px;
+  }
+  .rm-badge.green { background: rgba(34,197,94,.1); color: var(--green); border: 1px solid rgba(34,197,94,.2); }
+  .rm-badge.blue  { background: rgba(74,144,217,.1); color: var(--blue2); border: 1px solid rgba(74,144,217,.2); }
+  .rm-badge.orange { background: rgba(224,123,42,.1); color: var(--orange); border: 1px solid rgba(224,123,42,.2); }
+
+  /* ── FOOTER ── */
+  footer {
+    position: relative; z-index: 1;
+    background: #0A1628;
+    border-top: 1px solid rgba(46,91,168,.2);
+    padding: 40px;
+    text-align: center;
+  }
+  footer .footer-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px; color: #fff; margin-bottom: 8px;
+  }
+  footer p { font-size: 12px; color: var(--muted); margin-bottom: 4px; }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(15,31,61,.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(74,144,217,.12);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 40px; height: 56px;
+  }
+  .nav-brand { font-size: 13px; font-weight: 700; color: #fff; }
+  .nav-brand span { color: var(--blue2); }
+  .nav-links { display: flex; gap: 24px; }
+  .nav-links a {
+    font-size: 12px; font-weight: 600; color: var(--muted); text-decoration: none;
+    text-transform: uppercase; letter-spacing: 1px;
+    transition: color .2s;
+  }
+  .nav-links a:hover { color: var(--blue2); }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .hero-badge { animation: fadeUp .5s ease both; }
+  .hero h1    { animation: fadeUp .5s .1s ease both; }
+  .hero-sub   { animation: fadeUp .5s .2s ease both; }
+  .hero-ctas  { animation: fadeUp .5s .3s ease both; }
+
+  @media (max-width: 640px) {
+    nav .nav-links { display: none; }
+    section { padding: 60px 20px; }
+    .hero { padding: 100px 20px 60px; }
+    .ia-level { grid-template-columns: 48px 1fr; }
+    .ia-badge { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-brand">OCE · ORP <span>Genève</span></div>
+  <div class="nav-links">
+    <a href="#modules">Modules</a>
+    <a href="#ia">Vision IA</a>
+    <a href="#pocs">POCs</a>
+    <a href="#seco">SECO</a>
+    <a href="#roadmap">Roadmap</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">
+    Formation CP — Dispositif numérique — Mars 2026
+  </div>
+  <h1>Former les CP<br>à <em>l'ère de l'IA</em></h1>
+  <p class="hero-sub">
+    Un dispositif pédagogique complet pour les Conseillers en Personnel de l'ORP Genève — ancré dans la réalité du terrain, conçu pour durer.
+  </p>
+  <div class="hero-ctas">
+    <a href="#pocs" class="btn-primary">Voir les démos</a>
+    <a href="#roadmap" class="btn-ghost">Roadmap 12 mois</a>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stat">
+    <div class="stat-num">11</div>
+    <div class="stat-label">Modules</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">~11</div>
+    <div class="stat-label">Jours de formation</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">3</div>
+    <div class="stat-label">Niveaux IA</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">2</div>
+    <div class="stat-label">POCs opérationnels</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">5</div>
+    <div class="stat-label">Niveaux Kirkpatrick</div>
+  </div>
+</div>
+
+<!-- MODULES -->
+<section id="modules">
+  <div class="section-label">Formation de base</div>
+  <h2 class="section-title">Les 11 modules du parcours CP</h2>
+  <p class="section-desc">Séquence progressive M1→M11, ~11 jours. Chaque module déverrouille les suivants. Prérequis gérés automatiquement dans le tableau de bord.</p>
+  <div class="modules-grid">
+    <div class="module-card instit">
+      <div class="module-id">M1</div>
+      <div class="module-title">Accueil &amp; Intégration</div>
+      <div class="module-meta"><span class="tag">½ jour</span><span class="tag">Institutionnel</span></div>
+    </div>
+    <div class="module-card legal">
+      <div class="module-id">M2</div>
+      <div class="module-title">Assurance-chômage (LACI)</div>
+      <div class="module-meta"><span class="tag">1 jour</span><span class="tag">Légal</span></div>
+    </div>
+    <div class="module-card outils">
+      <div class="module-id">M3</div>
+      <div class="module-title">PlaSta &amp; GED</div>
+      <div class="module-meta"><span class="tag">1½ jour</span><span class="tag">Outils</span></div>
+    </div>
+    <div class="module-card outils">
+      <div class="module-id">M4</div>
+      <div class="module-title">Outils métier</div>
+      <div class="module-meta"><span class="tag">1 jour</span><span class="tag">Outils</span></div>
+    </div>
+    <div class="module-card ops">
+      <div class="module-id">M5</div>
+      <div class="module-title">Événements &amp; Réinsertion</div>
+      <div class="module-meta"><span class="tag">1 jour</span><span class="tag">Opérationnel</span></div>
+    </div>
+    <div class="module-card ops">
+      <div class="module-id">M6</div>
+      <div class="module-title">Périodes de contrôle &amp; Absences</div>
+      <div class="module-meta"><span class="tag">1 jour</span><span class="tag">Opérationnel</span></div>
+    </div>
+    <div class="module-card ops">
+      <div class="module-id">M7</div>
+      <div class="module-title">Placement &amp; Gain intermédiaire</div>
+      <div class="module-meta"><span class="tag">1 jour</span><span class="tag">Opérationnel</span></div>
+    </div>
+    <div class="module-card ops">
+      <div class="module-id">M8</div>
+      <div class="module-title">Mesures du marché du travail</div>
+      <div class="module-meta"><span class="tag">1 jour</span><span class="tag">Opérationnel</span></div>
+    </div>
+    <div class="module-card legal">
+      <div class="module-id">M9</div>
+      <div class="module-title">Manquement &amp; Aptitude</div>
+      <div class="module-meta"><span class="tag">½ jour</span><span class="tag">Légal</span></div>
+    </div>
+    <div class="module-card ops">
+      <div class="module-id">M10</div>
+      <div class="module-title">Situations spécifiques &amp; CII</div>
+      <div class="module-meta"><span class="tag">1 jour</span><span class="tag">Partenarial</span></div>
+    </div>
+    <div class="module-card eval">
+      <div class="module-id">M11</div>
+      <div class="module-title">Restitution &amp; Autoévaluation</div>
+      <div class="module-meta"><span class="tag">½ jour</span><span class="tag">Évaluation</span></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- IA -->
+<section id="ia">
+  <div class="section-label">Vision nommée — 12 mois</div>
+  <h2 class="section-title">L'IA dans le dispositif</h2>
+  <p class="section-desc">Trois niveaux de compétence IA, fil rouge transversal dans l'ensemble du parcours. Pas un module isolé — une posture professionnelle progressive.</p>
+  <div class="ia-stack">
+    <div class="ia-level l1">
+      <div class="ia-num">01</div>
+      <div class="ia-body">
+        <h3>Utiliser</h3>
+        <p>L'IA comme outil de travail quotidien. Rédaction de PV, recherche LACI, chatbot procédures OCE. Le CP prend en main les outils disponibles dès aujourd'hui.</p>
+      </div>
+      <div class="ia-badge">Maintenant</div>
+    </div>
+    <div class="ia-level l2">
+      <div class="ia-num">02</div>
+      <div class="ia-body">
+        <h3>Superviser</h3>
+        <p>L'IA comme appui au jugement. Le CP sait évaluer une réponse générée, détecter une erreur LACI, comprendre les limites d'un outil automatisé.</p>
+      </div>
+      <div class="ia-badge">6 mois</div>
+    </div>
+    <div class="ia-level l3">
+      <div class="ia-num">03</div>
+      <div class="ia-body">
+        <h3>Exercer son jugement</h3>
+        <p>Là où l'IA ne peut pas aller. Entretiens complexes, décisions sous responsabilité, accompagnement humain. La compétence irréductible du CP.</p>
+      </div>
+      <div class="ia-badge">12 mois</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- POCS -->
+<section id="pocs">
+  <div class="section-label">Preuves de concept — opérationnelles</div>
+  <h2 class="section-title">Ce qui fonctionne déjà</h2>
+  <p class="section-desc">Deux POCs construits et testés. Zéro infrastructure. Zéro installation. Déployables dans Claude.ai depuis un navigateur.</p>
+  <div class="poc-grid">
+    <div class="poc-card">
+      <div class="poc-header">
+        <div class="poc-icon" style="background:rgba(46,91,168,.2);">🗺️</div>
+        <span class="poc-tag" style="background:rgba(74,144,217,.1);color:#4A90D9;border:1px solid rgba(74,144,217,.25);">POC 1 — Live</span>
+      </div>
+      <div class="poc-body">
+        <h3>Tableau de bord itinéraire CP</h3>
+        <p>Suivi du parcours M1→M11 avec gestion automatique des prérequis, statuts en temps réel et persistance des données entre sessions.</p>
+        <ul class="poc-features">
+          <li>11 modules avec objectifs et contenus</li>
+          <li>Prérequis verrouillés automatiquement</li>
+          <li>Progression sauvegardée (Storage API)</li>
+          <li>Personnalisable par CP</li>
+        </ul>
+        <a href="#" class="btn-primary" style="font-size:13px;padding:10px 20px;display:inline-block;">Voir la démo</a>
+      </div>
+    </div>
+    <div class="poc-card">
+      <div class="poc-header">
+        <div class="poc-icon" style="background:rgba(10,126,140,.2);">🎲</div>
+        <span class="poc-tag" style="background:rgba(10,126,140,.1);color:#0A7E8C;border:1px solid rgba(10,126,140,.25);">POC 2 — Live</span>
+      </div>
+      <div class="poc-body">
+        <h3>Générateur de cas pratiques LACI</h3>
+        <p>Génération à la demande de dossiers DE fictifs, structurés pédagogiquement, avec correction complète et bases légales citées.</p>
+        <ul class="poc-features">
+          <li>Paramétrable : situation, secteur, âge, complication</li>
+          <li>3 niveaux : débutant / intermédiaire / avancé</li>
+          <li>Correction + bases légales (LACI / LMC)</li>
+          <li>Erreurs fréquentes + conseil formateur</li>
+        </ul>
+        <a href="#" class="btn-primary" style="font-size:13px;padding:10px 20px;display:inline-block;background:linear-gradient(135deg,#0A7E8C,#2E5BA8);">Voir la démo</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- SECO -->
+<section id="seco">
+  <div class="section-label">Positionnement stratégique</div>
+  <h2 class="section-title">SECO &amp; niveau cantonal genevois</h2>
+  <p class="section-desc">Le SECO construit le socle fédéral. Ce dispositif construit ce qui est spécifique à Genève — complémentaire, pas concurrent.</p>
+  <table class="compare-table">
+    <thead>
+      <tr>
+        <th>Dimension</th>
+        <th>Plateforme SECO</th>
+        <th>Dispositif OCE/ORP GE</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Périmètre</td>
+        <td>Fédéral — tous cantons</td>
+        <td class="highlight">Cantonal — spécificités GE</td>
+      </tr>
+      <tr>
+        <td>Contenu</td>
+        <td>Socle commun AC</td>
+        <td class="highlight">LMC · CII · partenaires locaux</td>
+      </tr>
+      <tr>
+        <td>Format</td>
+        <td>Asynchrone · à distance</td>
+        <td class="highlight">Présentiel + numérique hybride</td>
+      </tr>
+      <tr>
+        <td>Pédagogie</td>
+        <td>Standardisée</td>
+        <td class="highlight">Active · adaptée terrain GE</td>
+      </tr>
+      <tr>
+        <td>IA</td>
+        <td>À confirmer</td>
+        <td class="highlight">Intégrée — 3 niveaux nommés</td>
+      </tr>
+      <tr>
+        <td>Position</td>
+        <td>Socle obligatoire</td>
+        <td class="highlight">Précurseur → contributeur GE</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<div class="divider"></div>
+
+<!-- ROADMAP -->
+<section id="roadmap">
+  <div class="section-label">Horizon 12 mois</div>
+  <h2 class="section-title">Ce qui est prévu</h2>
+  <p class="section-desc">Ce qui est fait, ce qui est en cours, ce qui arrive — une feuille de route assumée et publique.</p>
+  <div class="roadmap">
+    <div class="rm-item">
+      <div class="rm-dot done">✓</div>
+      <div class="rm-content">
+        <div class="rm-period">Mars 2026 — Fondations</div>
+        <div class="rm-title">Concept pédagogique v1.3 + Documentation + 2 POCs</div>
+        <div class="rm-desc">Concept complet (8 blocs, eduQua, Kirkpatrick), tableau de bord CP, générateur de cas LACI, documentation technique.</div>
+        <div class="rm-badges">
+          <span class="rm-badge green">Livré</span>
+          <span class="rm-badge blue">Testable maintenant</span>
+        </div>
+      </div>
+    </div>
+    <div class="rm-item">
+      <div class="rm-dot active">→</div>
+      <div class="rm-content">
+        <div class="rm-period">Avril 2026 — Validation</div>
+        <div class="rm-title">Validation direction · GitHub Pages live · DSI/OCSIN</div>
+        <div class="rm-desc">Présentation aux collègues, à la direction, au service support. Activation GitHub Pages. Vérification domaines réseau État GE.</div>
+        <div class="rm-badges">
+          <span class="rm-badge blue">En cours</span>
+        </div>
+      </div>
+    </div>
+    <div class="rm-item">
+      <div class="rm-dot soon">3</div>
+      <div class="rm-content">
+        <div class="rm-period">Avr — Juin 2026 — Contenus</div>
+        <div class="rm-title">Refonte M1–M4 · Capsules micro-learning M2</div>
+        <div class="rm-desc">Fiches de cours formateur · Déroulés pédagogiques · Premières capsules LACI pour révision autonome.</div>
+        <div class="rm-badges">
+          <span class="rm-badge orange">Planifié</span>
+        </div>
+      </div>
+    </div>
+    <div class="rm-item">
+      <div class="rm-dot soon">4</div>
+      <div class="rm-content">
+        <div class="rm-period">Juil — Sept 2026 — IA niveau 2</div>
+        <div class="rm-title">Simulateur entretien CP/DE · Refonte M5–M11</div>
+        <div class="rm-desc">L'IA joue le rôle d'un DE dans une situation complexe. Le CP s'entraîne à la compétence que l'IA ne peut pas remplacer.</div>
+        <div class="rm-badges">
+          <span class="rm-badge orange">Planifié</span>
+          <span class="rm-badge blue">Haute valeur</span>
+        </div>
+      </div>
+    </div>
+    <div class="rm-item">
+      <div class="rm-dot soon">5</div>
+      <div class="rm-content">
+        <div class="rm-period">Oct — Déc 2026 — Articulation SECO + Bilan</div>
+        <div class="rm-title">Assistant LACI · Connexion plateforme SECO · Kirkpatrick N3</div>
+        <div class="rm-desc">Chatbot procédures OCE · Intégration avec modules SECO · Première évaluation de transfert terrain (Kirkpatrick niveau 3).</div>
+        <div class="rm-badges">
+          <span class="rm-badge orange">Planifié</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-title">OCE · ORP Genève</div>
+  <p>Office cantonal de l'emploi — Département de l'économie et de l'emploi (DEE)</p>
+  <p style="margin-top:8px;color:#475569;">Coordination ORP — Pôle Formation · Version 1.0 · Mars 2026</p>
+</footer>
+
+</body>
+</html>
